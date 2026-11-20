@@ -38,7 +38,17 @@
   if (k) {
     if (!m) history.replaceState(null, '', '#k=' + k);
     var f = document.createElement('iframe');
-    f.src = APP + '?app=rep&w=1&k=' + encodeURIComponent(k); // w=1: ya estamos en la página con ícono
+    // El iPhone borra lo que guarda la app (página de Google dentro de esta): aquí se recuerda
+    // la sesión del coordinador y el nombre del repartidor, y se le devuelven al abrir.
+    var mem = function (c) { try { return localStorage.getItem('repartos_' + c) || ''; } catch (e) { return ''; } };
+    f.src = APP + '?app=rep&w=1&k=' + encodeURIComponent(k) + // w=1: ya estamos en la página con ícono
+      '&s=' + encodeURIComponent(mem('uvas_ses')) + '&r=' + encodeURIComponent(mem('uvas_rep'));
+    window.addEventListener('message', function (e) {
+      if (!/^https:\/\/[\w.-]+\.googleusercontent\.com$/.test(e.origin)) return;
+      var d = e.data && e.data.repartos;
+      if (!d || (d.clave !== 'uvas_ses' && d.clave !== 'uvas_rep')) return;
+      try { if (d.valor) localStorage.setItem('repartos_' + d.clave, String(d.valor).slice(0, 100)); else localStorage.removeItem('repartos_' + d.clave); } catch (x) {}
+    });
     f.allow = 'camera; clipboard-write; geolocation';
     f.title = 'Repartos';
     document.body.appendChild(f);
