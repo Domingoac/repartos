@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Repartos</title>
+<!-- Ícono y nombre al "Agregar a pantalla de inicio" -->
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-title" content="Repartos">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#5b2a6e">
+<meta name="robots" content="noindex">
+<style>
+  html, body { margin: 0; height: 100%; background: #faf7f2; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; padding-top: env(safe-area-inset-top); box-sizing: border-box; background: #faf7f2; }
+  .msg { max-width: 420px; margin: 0 auto; padding: 60px 24px; text-align: center; color: #2b2230; }
+  .msg h1 { color: #5b2a6e; }
+</style>
+</head>
+<body>
+<div class="msg" id="msg" hidden>
+  <h1>🍇 Repartos</h1>
+  <p>Abre el link que te mandó el coordinador por WhatsApp.</p>
+</div>
+<script>
+  // La clave del link viene en el "#k=..." (no se envía a ningún servidor ni queda en este repositorio).
+  // Se recuerda en el teléfono para cuando se abre desde el ícono de la pantalla de inicio.
+  var APP = 'https://script.google.com/macros/s/AKfycbyToOzTEA95Yw3LM0HVRzR5P8zNzp4JxV5BKRAOqwpYgkgQ-Kk9_TE2mF3nVxA_M4g9/exec';
+  var m = location.hash.match(/k=(\w+)/), k = m ? m[1] : '';
+  try {
+    if (k) localStorage.setItem('repartos_k', k); else k = localStorage.getItem('repartos_k') || '';
+  } catch (e) {}
+  if (k) {
+    if (!m) history.replaceState(null, '', '#k=' + k);
+    var f = document.createElement('iframe');
+    f.src = APP + '?app=rep&k=' + encodeURIComponent(k);
+    f.allow = 'camera; clipboard-write; geolocation';
+    f.title = 'Repartos';
+    document.body.appendChild(f);
+  } else {
+    document.getElementById('msg').hidden = false;
+  }
+</script>
+</body>
+</html>
