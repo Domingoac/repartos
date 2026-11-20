@@ -38,7 +38,7 @@
   if (k) {
     if (!m) history.replaceState(null, '', '#k=' + k);
     var f = document.createElement('iframe');
-    f.src = APP + '?app=rep&k=' + encodeURIComponent(k);
+    f.src = APP + '?app=rep&w=1&k=' + encodeURIComponent(k); // w=1: ya estamos en la página con ícono
     f.allow = 'camera; clipboard-write; geolocation';
     f.title = 'Repartos';
     document.body.appendChild(f);
